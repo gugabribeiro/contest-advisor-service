@@ -12,11 +12,14 @@ server.get('/', (_, res) => {
   res.send({ message: 'Running' })
 })
 
-const connectors = require('./routes/connector.routes')
+const connectors = require('./routes/connectors.routes')
 server.use('/api', connectors)
 
 const problems = require('./routes/problems.routes')
 server.use('/api', problems)
+
+const contests = require('./routes/contests.routes')
+server.use('/api', contests)
 
 database
   .authenticate()

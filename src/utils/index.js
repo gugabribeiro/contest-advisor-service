@@ -1,7 +1,8 @@
 const validate = (fields, entity) => {
   return fields.reduce(
     (previous, field) => {
-      if (entity[field]) {
+      const value = entity[field]
+      if (value !== null && value !== undefined) {
         return previous
       }
       return {

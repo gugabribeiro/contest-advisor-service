@@ -1,4 +1,3 @@
-const { Op } = require('sequelize')
 const { StatusCodes } = require('http-status-codes')
 
 const { validate, wrong } = require('../utils')
@@ -57,7 +56,7 @@ const Problems = {
   get: async (req, res) => {
     const { id } = req.params
     try {
-      const problem = await Connector.findByPk(id)
+      const problem = await Problem.findByPk(id)
       if (!problem) {
         return res.status(StatusCodes.NOT_FOUND).send({
           message: `Connector '${id}' doesn't exists`,

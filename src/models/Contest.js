@@ -28,7 +28,11 @@ const Contest = database.define('Contest', {
     type: DataTypes.STRING({ length: 2048 }),
     allowNull: false,
     get() {
-      return this.getDataValue('users').split(',')
+      const users = this.getDataValue('users')
+      if (!users.length) {
+        return []
+      }
+      return users.split(',')
     },
     set(users) {
       this.setDataValue('users', users.join(','))
@@ -38,7 +42,11 @@ const Contest = database.define('Contest', {
     type: DataTypes.STRING({ length: 2048 }),
     allowNull: false,
     get() {
-      return this.getDataValue('problems').split(',')
+      const problems = this.getDataValue('problems')
+      if (!problems.length) {
+        return []
+      }
+      return problems.split(',')
     },
     set(problems) {
       this.setDataValue('problems', problems.join(','))

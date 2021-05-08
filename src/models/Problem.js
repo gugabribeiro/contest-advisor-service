@@ -27,7 +27,11 @@ const Problem = database.define('Problem', {
     type: DataTypes.STRING({ length: 500 }),
     allowNull: false,
     get() {
-      return this.getDataValue('topics').split(',')
+      const tags = this.getDataValue('topics')
+      if (!tags.length) {
+        return []
+      }
+      return tags.split(',')
     },
     set(topics) {
       this.setDataValue('topics', topics.join(','))

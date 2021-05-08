@@ -15,9 +15,6 @@ server.get('/', (_, res) => {
 const connectors = require('./routes/connectors.routes')
 server.use('/api', connectors)
 
-const problems = require('./routes/problems.routes')
-server.use('/api', problems)
-
 const contests = require('./routes/contests.routes')
 server.use('/api', contests)
 
@@ -38,7 +35,7 @@ database
         )
       })
     } catch (err) {
-      console.log(err)
+      console.error(err)
     }
   })
   .catch((err) => {

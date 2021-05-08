@@ -1,7 +1,7 @@
 const { StatusCodes } = require('http-status-codes')
 
 const { validate, wrong } = require('../utils')
-const Problem = require('../models/Problem')
+
 const Connector = require('../models/Connector')
 const Contest = require('../models/Contest')
 
@@ -9,27 +9,30 @@ const Contests = {
   create: async (req, res) => {
     const {
       name,
+      penalty,
       connector,
       startTimeInSeconds,
       durationInSeconds,
-      users,
+      contestants,
       problems,
     } = req.body
     const validation = validate(
       [
         'name',
+        'penalty',
         'connector',
         'startTimeInSeconds',
         'durationInSeconds',
-        'users',
+        'contestants',
         'problems',
       ],
       {
         name,
+        penalty,
         connector,
         startTimeInSeconds,
         durationInSeconds,
-        users,
+        contestants,
         problems,
       }
     )
@@ -45,31 +48,13 @@ const Contests = {
           message: `Connector '${connector}' doesn't exists`,
         })
       }
-      const problemsExists = await Promise.all(
-        problems.map((problem) => Problem.findByPk(problem))
-      )
-      if (problemsExists.includes(null)) {
-        const nonExistingsProblems = problemsExists.reduce(
-          (previous, problem, index) => {
-            if (!problem) {
-              return [...previous, problems[index]]
-            }
-            return previous
-          },
-          []
-        )
-        return res.status(StatusCodes.NOT_FOUND).send({
-          message: `Problems [${nonExistingsProblems.join(
-            ', '
-          )} doesn't exists]`,
-        })
-      }
       const contest = await Contest.create({
         name,
+        penalty,
         connector,
         startTimeInSeconds,
         durationInSeconds,
-        users,
+        contestants,
         problems,
       })
       return res.status(StatusCodes.CREATED).send(contest)
@@ -86,17 +71,8 @@ const Contests = {
           message: `Contest '${id}' doesn't exists`,
         })
       }
-      const problemIds = contest.problems
-      console.log(problemIds)
-      const problems = await Promise.all(
-        problemIds.map((problemId) => Problem.findByPk(problemId))
-      )
-      return res.status(StatusCodes.OK).send({
-        ...contest.toJSON(),
-        problems: problems.map((problem) => problem.toJSON()),
-      })
+      return res.status(StatusCodes.OK).send(contest)
     } catch (err) {
-      console.log(err)
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },
@@ -112,7 +88,8 @@ const Contests = {
     const { id } = req.params
     const {
       name,
-      users,
+      penalty,
+      contestants,
       problems,
       connector,
       startTimeInSeconds,
@@ -127,31 +104,11 @@ const Contests = {
           })
         }
       }
-      if (problems) {
-        const problemsExists = await Promise.all(
-          problems.map((problem) => Problem.findByPk(problem))
-        )
-        if (problemsExists.includes(null)) {
-          const nonExistingsProblems = problemsExists.reduce(
-            (previous, problem, index) => {
-              if (!problem) {
-                return [...previous, problems[index]]
-              }
-              return previous
-            },
-            []
-          )
-          return res.status(StatusCodes.NOT_FOUND).send({
-            message: `Problems [${nonExistingsProblems.join(
-              ', '
-            )}] doesn't exists`,
-          })
-        }
-      }
       const [count] = await Contest.update(
         {
           name,
-          users,
+          penalty,
+          contestants,
           problems,
           connector,
           startTimeInSeconds,

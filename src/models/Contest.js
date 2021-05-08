@@ -20,22 +20,26 @@ const Contest = database.define('Contest', {
     type: DataTypes.BIGINT,
     allowNull: false,
   },
+  penalty: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
   connector: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  users: {
+  contestants: {
     type: DataTypes.STRING({ length: 2048 }),
     allowNull: false,
     get() {
-      const users = this.getDataValue('users')
-      if (!users.length) {
+      const contestants = this.getDataValue('contestants')
+      if (!contestants.length) {
         return []
       }
-      return users.split(',')
+      return contestants.split(',')
     },
-    set(users) {
-      this.setDataValue('users', users.join(','))
+    set(contestants) {
+      this.setDataValue('contestants', contestants.join(','))
     },
   },
   problems: {

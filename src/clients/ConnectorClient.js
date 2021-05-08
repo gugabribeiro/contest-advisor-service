@@ -20,7 +20,7 @@ class ConnectorClient {
   }
 
   submissions(user) {
-    return http.get(this.routes.submissions(user))
+    return http.get(this.routes.submissions(user)).then(({ data }) => data)
   }
 
   get routes() {
@@ -28,8 +28,8 @@ class ConnectorClient {
       redirect: (problemId) =>
         `${this.connector.url}/problems/${problemId}/redirect`,
       problems: () => `${this.connector.url}/problems`,
-      profile: (user) => `${this.connector.url}/user/${user}`,
-      submissions: (user) => `${this.connector.url}/user/${user}/submissions`,
+      profile: (user) => `${this.connector.url}/users/${user}`,
+      submissions: (user) => `${this.connector.url}/users/${user}/submissions`,
     }
   }
 }

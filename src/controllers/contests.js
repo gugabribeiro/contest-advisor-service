@@ -2,8 +2,9 @@ const { StatusCodes } = require('http-status-codes')
 
 const { validate, wrong } = require('../utils')
 
-const Connector = require('../models/Connector')
 const Contest = require('../models/Contest')
+const Connector = require('../models/Connector')
+const ConnectorClient = require('../clients/ConnectorClient')
 
 const Contests = {
   create: async (req, res) => {
@@ -94,7 +95,7 @@ const Contests = {
       problems,
       connector,
       startTimeInSeconds,
-      durationTimeInSeconds,
+      durationInSeconds,
     } = req.body
     try {
       if (connector) {
@@ -113,7 +114,7 @@ const Contests = {
           problems,
           connector,
           startTimeInSeconds,
-          durationTimeInSeconds,
+          durationInSeconds,
         },
         {
           where: {
@@ -128,6 +129,73 @@ const Contests = {
       }
       const contest = await Contest.findByPk(id)
       return res.status(StatusCodes.OK).send(contest)
+    } catch (err) {
+      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
+    }
+  },
+  status: async (req, res) => {
+    const { id } = req.params
+    try {
+      const contest = await Contest.findByPk(id)
+      if (!contest) {
+        return res.status(StatusCodes.NOT_FOUND).send({
+          message: `Contest '${id}' doesn't exists`,
+        })
+      }
+      const {
+        startTimeInSeconds,
+        durationInSeconds,
+        connector: connectorName,
+        contestants: users,
+        problems,
+      } = contest
+      const connector = await Connector.findByPk(connectorName)
+      if (!connector) {
+        return res.status(StatusCodes.NOT_FOUND).send({
+          message: `Connector '${connectorName}' doesn't exists`,
+        })
+      }
+      const client = new ConnectorClient(connector.toJSON())
+      var status = {}
+      for (const user of users) {
+        var userStatus = {}
+        for (const problem of problems) {
+          userStatus = {
+            ...userStatus,
+            [problem]: {
+              tries: 0,
+              solved: false,
+              solvedTimeInSeconds: Number.MAX_SAFE_INTEGER,
+            },
+          }
+        }
+        const submissions = await client.submissions(user)
+        for (const submission of submissions) {
+          const { problemId, status, momentInSeconds } = submission
+          if (!(problemId in userStatus)) {
+            continue
+          }
+          if (
+            momentInSeconds > durationInSeconds ||
+            momentInSeconds < startTimeInSeconds
+          ) {
+            continue
+          }
+          if (status === 'SOLVED') {
+            userStatus[problemId].solved = true
+            userStatus[problemId].solvedTimeInSeconds = Math.min(
+              momentInSeconds,
+              userStatus[problemId].solvedTimeInSeconds
+            )
+          }
+          userStatus[problemId].tries++
+        }
+        status = {
+          ...status,
+          [user]: userStatus,
+        }
+      }
+      res.status(StatusCodes.OK).send(status)
     } catch (err) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }

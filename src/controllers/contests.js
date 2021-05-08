@@ -1,6 +1,6 @@
 const { StatusCodes } = require('http-status-codes')
 
-const { validate, wrong } = require('../utils')
+const { validate, wrong, validUUID } = require('../utils')
 
 const cache = require('../cache')
 const Contest = require('../models/Contest')
@@ -66,6 +66,11 @@ const Contests = {
   },
   get: async (req, res) => {
     const { id } = req.params
+    if (!validUUID(id)) {
+      return res.status(StatusCodes.NOT_FOUND).send({
+        message: `Contest '${id}' doesn't exists`,
+      })
+    }
     try {
       const contest = await Contest.findByPk(id)
       if (!contest) {
@@ -75,6 +80,7 @@ const Contests = {
       }
       return res.status(StatusCodes.OK).send(contest)
     } catch (err) {
+      console.log(err)
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },

@@ -126,11 +126,9 @@ const Contests = {
           message: `Contest '${id}' doesn't exists`,
         })
       }
-      console.log(id)
       const contest = await Contest.findByPk(id)
       return res.status(StatusCodes.OK).send(contest)
     } catch (err) {
-      console.log(err)
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },

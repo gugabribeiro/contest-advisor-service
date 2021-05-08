@@ -7,9 +7,6 @@ const database = new Sequelize(process.env.DATABASE_URL, {
       rejectUnauthorized: false,
     },
   },
-  sync: {
-    force: true,
-  },
 })
 
 module.exports = database

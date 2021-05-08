@@ -2,6 +2,7 @@ const { StatusCodes } = require('http-status-codes')
 
 const { validate, wrong } = require('../utils')
 
+const cache = require('../cache')
 const Contest = require('../models/Contest')
 const Connector = require('../models/Connector')
 const ConnectorClient = require('../clients/ConnectorClient')
@@ -136,6 +137,10 @@ const Contests = {
   status: async (req, res) => {
     const { id } = req.params
     try {
+      const cached = await cache.get(id)
+      if (cached) {
+        return res.status(StatusCodes.OK).send(cached)
+      }
       const contest = await Contest.findByPk(id)
       if (!contest) {
         return res.status(StatusCodes.NOT_FOUND).send({
@@ -195,6 +200,7 @@ const Contests = {
           [user]: userStatus,
         }
       }
+      cache.set(id, status, 60)
       res.status(StatusCodes.OK).send(status)
     } catch (err) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)

@@ -86,6 +86,7 @@ const Contests = {
   },
   update: async (req, res) => {
     const { id } = req.params
+    console.log(id)
     const {
       name,
       penalty,
@@ -122,12 +123,14 @@ const Contests = {
       )
       if (!count) {
         return res.status(StatusCodes.NOT_FOUND).send({
-          message: `Contests '${id}' doesn't exists`,
+          message: `Contest '${id}' doesn't exists`,
         })
       }
+      console.log(id)
       const contest = await Contest.findByPk(id)
       return res.status(StatusCodes.OK).send(contest)
     } catch (err) {
+      console.log(err)
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },

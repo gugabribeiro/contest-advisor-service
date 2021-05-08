@@ -33,7 +33,7 @@ const Contest = database.define('Contest', {
     allowNull: false,
     get() {
       const contestants = this.getDataValue('contestants')
-      if (!contestants.length) {
+      if (!contestants || !contestants.length) {
         return []
       }
       return contestants.split(',')
@@ -47,7 +47,7 @@ const Contest = database.define('Contest', {
     allowNull: false,
     get() {
       const problems = this.getDataValue('problems')
-      if (!problems.length) {
+      if (!problems || !problems.length) {
         return []
       }
       return problems.split(',')

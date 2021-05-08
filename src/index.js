@@ -15,6 +15,9 @@ server.get('/', (_, res) => {
 const connectors = require('./routes/connector.routes')
 server.use('/api', connectors)
 
+const problems = require('./routes/problems.routes')
+server.use('/api', problems)
+
 database
   .authenticate()
   .then(async () => {

@@ -139,6 +139,7 @@ const Contests = {
         })
       }
       const contest = await Contest.findByPk(id)
+      cache.expire(id)
       return res.status(StatusCodes.OK).send(contest)
     } catch (err) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)

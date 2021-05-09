@@ -21,6 +21,10 @@ class Cache {
   del(key) {
     return this.redis.del(key)
   }
+
+  expire(key) {
+    return this.redis.expire(key, 0)
+  }
 }
 
 module.exports = new Cache()

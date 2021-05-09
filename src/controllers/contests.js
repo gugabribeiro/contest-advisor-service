@@ -191,7 +191,7 @@ const Contests = {
             continue
           }
           if (
-            momentInSeconds > durationInSeconds ||
+            momentInSeconds > startTimeInSeconds + durationInSeconds ||
             momentInSeconds < startTimeInSeconds
           ) {
             continue

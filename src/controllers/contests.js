@@ -203,7 +203,25 @@ const Contests = {
               userStatus[problemId].solvedTimeInSeconds
             )
           }
-          userStatus[problemId].tries++
+        }
+        for (const submission of submissions) {
+          const { problemId, momentInSeconds } = submission
+          if (!(problemId in userStatus)) {
+            continue
+          }
+          if (
+            momentInSeconds > startTimeInSeconds + durationInSeconds ||
+            momentInSeconds < startTimeInSeconds
+          ) {
+            continue
+          }
+          if (userStatus[problemId].solved) {
+            if (momentInSeconds <= userStatus[problemId].solvedTimeInSeconds) {
+              userStatus[problemId].tries++
+            }
+          } else {
+            userStatus[problemId].tries++
+          }
         }
         status = {
           ...status,

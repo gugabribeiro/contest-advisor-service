@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+const cors = require('cors')
 const express = require('express')
 const database = require('./database')
 
@@ -7,6 +8,7 @@ const server = express()
 const port = process.env.PORT
 
 server.use(express.json())
+server.use(cors())
 
 server.get('/', (_, res) => {
   res.send({ message: 'Running' })

@@ -5,12 +5,6 @@ class ConnectorClient {
     this.connector = connector
   }
 
-  redirect(problemId) {
-    return http
-      .get(this.routes.redirect(problemId))
-      .then(({ data: { url } }) => url)
-  }
-
   problems() {
     return http.get(this.routes.problems()).then(({ data }) => data)
   }
@@ -25,8 +19,6 @@ class ConnectorClient {
 
   get routes() {
     return {
-      redirect: (problemId) =>
-        `${this.connector.url}/problems/${problemId}/redirect`,
       problems: () => `${this.connector.url}/problems`,
       profile: (user) => `${this.connector.url}/users/${user}`,
       submissions: (user) => `${this.connector.url}/users/${user}/submissions`,

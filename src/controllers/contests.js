@@ -13,6 +13,7 @@ const Contests = {
       name,
       penalty,
       connector,
+      redirectUrl,
       startTimeInSeconds,
       durationInSeconds,
       contestants,
@@ -23,6 +24,7 @@ const Contests = {
         'name',
         'penalty',
         'connector',
+        'redirectUrl',
         'startTimeInSeconds',
         'durationInSeconds',
         'contestants',
@@ -32,6 +34,7 @@ const Contests = {
         name,
         penalty,
         connector,
+        redirectUrl,
         startTimeInSeconds,
         durationInSeconds,
         contestants,
@@ -54,6 +57,7 @@ const Contests = {
         name,
         penalty,
         connector,
+        redirectUrl,
         startTimeInSeconds,
         durationInSeconds,
         contestants,
@@ -80,7 +84,6 @@ const Contests = {
       }
       return res.status(StatusCodes.OK).send(contest)
     } catch (err) {
-      console.log(err)
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },
@@ -100,6 +103,7 @@ const Contests = {
       contestants,
       problems,
       connector,
+      redirectUrl,
       startTimeInSeconds,
       durationInSeconds,
     } = req.body
@@ -118,6 +122,7 @@ const Contests = {
           penalty,
           contestants,
           problems,
+          redirectUrl,
           connector,
           startTimeInSeconds,
           durationInSeconds,

@@ -27,7 +27,7 @@ database
     try {
       console.log('\x1b[32m%s\x1b[0m', 'Syncing database models...')
       await database.sync({
-        force: false,
+        force: true,
       })
       console.log('\x1b[32m%s\x1b[0m', 'Database synchronized successfully')
       server.listen(port, () => {

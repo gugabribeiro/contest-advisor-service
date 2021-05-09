@@ -24,6 +24,10 @@ const Contest = database.define('Contest', {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+  redirectUrl: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   connector: {
     type: DataTypes.STRING,
     allowNull: false,

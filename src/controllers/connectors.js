@@ -99,22 +99,6 @@ const Connectors = {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },
-  redirect: async (req, res) => {
-    const { name, problemId } = req.params
-    try {
-      const connector = await Connector.findByPk(name)
-      if (!connector) {
-        return res.status(StatusCodes.NOT_FOUND).send({
-          message: `Connector '${name}' doesn't exists`,
-        })
-      }
-      const client = new ConnectorClient(connector.toJSON())
-      const url = await client.redirect(problemId)
-      res.status(StatusCodes.MOVED_TEMPORARILY).redirect(url)
-    } catch (err) {
-      return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
-    }
-  },
 }
 
 module.exports = Connectors

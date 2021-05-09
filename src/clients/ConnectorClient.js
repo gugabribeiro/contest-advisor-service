@@ -12,11 +12,11 @@ class ConnectorClient {
   }
 
   problems() {
-    return http.get(this.routes.problems())
+    return http.get(this.routes.problems()).then(({ data }) => data)
   }
 
   profile(user) {
-    return http.get(this.routes.profile(user))
+    return http.get(this.routes.profile(user)).then(({ data }) => data)
   }
 
   submissions(user) {

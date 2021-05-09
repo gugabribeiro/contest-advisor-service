@@ -94,7 +94,6 @@ const Contests = {
   },
   update: async (req, res) => {
     const { id } = req.params
-    console.log(id)
     const {
       name,
       penalty,

@@ -103,11 +103,12 @@ const Connectors = {
   },
   recommendedProblems: async (req, res) => {
     const { name } = req.params
-    const { count, contestants, topics } = req.body
+    const { count, contestants, strict = false, topics = [] } = req.body
     const validation = validate(['count', 'contestants'], {
       count,
       contestants,
     })
+    console.log(count, strict, contestants, topics)
     if (!validation.value || contestants.length === 0) {
       return res.status(StatusCodes.BAD_REQUEST).send({
         message: `Missing required fields: [${validation.missing.join(',')}]`,
@@ -134,17 +135,25 @@ const Connectors = {
         if (problem.id in solvedBySome) {
           continue
         }
-        let containsSomeTopic = topics && topics.length ? false : true
-        if (topics) {
-          for (const topic of topics) {
-            if (problem.topics.includes(topic)) {
-              containsSomeTopic = true
-              break
-            }
+        let containsSome = topics.length === 0
+        for (const topic of problem.topics) {
+          if (topics.includes(topic)) {
+            containsSome = true
           }
         }
-        if (!containsSomeTopic) {
+        if (!containsSome) {
           continue
+        }
+        if (strict) {
+          let diverge = false
+          for (const topic of topics) {
+            if (!problem.topics.includes(topic)) {
+              diverge = true
+            }
+          }
+          if (diverge) {
+            continue
+          }
         }
         if (!(problem.level in problemsByLevel)) {
           problemsByLevel[problem.level] = []

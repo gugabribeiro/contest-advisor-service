@@ -27,6 +27,7 @@ const authenticated = async (req, res, next) => {
       ...res.locals,
       email,
     }
+
     return next()
   } catch (err) {
     return res

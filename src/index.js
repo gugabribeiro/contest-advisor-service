@@ -14,6 +14,10 @@ server.get('/', (_, res) => {
   res.send({ message: 'Running' })
 })
 
+const firebase = require('firebase-admin')
+const { firebaseConfig } = require('./auth')
+firebase.initializeApp(firebaseConfig)
+
 const connectors = require('./routes/connectors.routes')
 server.use('/api', connectors)
 

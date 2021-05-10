@@ -11,6 +11,7 @@
     "cors": "^2.8.5",
     "dotenv": "^9.0.0",
     "express": "^4.17.1",
+    "firebase-admin": "^9.7.0",
     "http-status-codes": "^2.1.4",
     "ioredis": "^4.27.2",
     "pg": "^8.6.0",

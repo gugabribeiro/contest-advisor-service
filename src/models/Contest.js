@@ -28,6 +28,10 @@ const Contest = database.define('Contest', {
     type: DataTypes.STRING,
     allowNull: false,
   },
+  owner: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
   connector: {
     type: DataTypes.STRING,
     allowNull: false,

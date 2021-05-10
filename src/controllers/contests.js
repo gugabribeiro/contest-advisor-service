@@ -19,6 +19,7 @@ const Contests = {
       contestants,
       problems,
     } = req.body
+    const { email } = res.locals
     const validation = validate(
       [
         'name',
@@ -62,6 +63,7 @@ const Contests = {
         durationInSeconds,
         contestants,
         problems,
+        owner: email,
       })
       return res.status(StatusCodes.CREATED).send(contest)
     } catch (err) {
@@ -88,8 +90,13 @@ const Contests = {
     }
   },
   getAll: async (_, res) => {
+    const { email } = res.locals
     try {
-      const contests = await Contest.findAll()
+      const contests = await Contest.findAll({
+        where: {
+          owner: email,
+        },
+      })
       return res.status(StatusCodes.OK).send(contests)
     } catch (err) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
@@ -107,6 +114,7 @@ const Contests = {
       startTimeInSeconds,
       durationInSeconds,
     } = req.body
+    const { email } = res.locals
     try {
       if (connector) {
         const connectorExists = await Connector.findByPk(connector)
@@ -116,7 +124,19 @@ const Contests = {
           })
         }
       }
-      const [count] = await Contest.update(
+      const contest = await Contest.findByPk(id)
+      if (!contest) {
+        return res.status(StatusCodes.NOT_FOUND).send({
+          message: `Contest '${id}' doesn't exists`,
+        })
+      }
+      const { owner } = contest
+      if (owner !== email) {
+        return res.status(StatusCodes.FORBIDDEN).send({
+          message: 'You are not allowed to do that',
+        })
+      }
+      await Contest.update(
         {
           name,
           penalty,
@@ -133,14 +153,9 @@ const Contests = {
           },
         }
       )
-      if (!count) {
-        return res.status(StatusCodes.NOT_FOUND).send({
-          message: `Contest '${id}' doesn't exists`,
-        })
-      }
-      const contest = await Contest.findByPk(id)
+      const response = await Contest.findByPk(id)
       cache.expire(id)
-      return res.status(StatusCodes.OK).send(contest)
+      return res.status(StatusCodes.OK).send(response)
     } catch (err) {
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }

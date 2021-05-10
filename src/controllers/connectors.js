@@ -194,8 +194,15 @@ const Connectors = {
         }
         // Getting the first problem
         const chosenLevel = availableLevels[nearest]
-        recommendedProblems.push(
-          problemsByLevel[chosenLevel][problemsByLevel[chosenLevel].length - 1]
+        // Get random problem from this level
+        const chosenIndex = Math.floor(
+          Math.random() * problemsByLevel[chosenLevel].length
+        )
+        recommendedProblems.push(problemsByLevel[chosenLevel][chosenIndex])
+        // Removing the selected problem in order to avoid duplicates
+        problemsByLevel[chosenLevel] = problemsByLevel[chosenLevel].splice(
+          chosenIndex,
+          1
         )
         // Prevent to take the same problem multiple times
         problemsByLevel[chosenLevel].pop()

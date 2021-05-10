@@ -175,6 +175,10 @@ const Connectors = {
       }
       let meanLevel = sumLevels / contestants.length
       let sigmaLevel = maxLevel - meanLevel
+      if (sigmaLevel === 0) {
+        // Prevent sigma equals to 0
+        sigmaLevel = 500
+      }
       const distribution = normal(meanLevel, sigmaLevel * sigmaLevel)
       const samples = distribution.random(count).map((sample) => {
         const nextInt = Math.floor(sample)

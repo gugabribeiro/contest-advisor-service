@@ -124,6 +124,7 @@ const Connectors = {
       const client = new ConnectorClient(connector.toJSON())
       let solvedBySome = {}
       for (const user of contestants) {
+        console.log(user, 'submissions')
         const submissions = await client.submissions(user).catch(() => [])
         for (const submission of submissions) {
           solvedBySome[submission.problemId] = true
@@ -169,6 +170,7 @@ const Connectors = {
             level: 0,
           }))
         }
+        console.log(profile)
         cache.set(user, profile, 86400)
         sumLevels += profile.level
         maxLevel = Math.max(maxLevel, profile.level)
@@ -221,6 +223,10 @@ const Connectors = {
         problemsByLevel[chosenLevel].pop()
       }
       return res.status(StatusCodes.OK).send({
+        maxLevel,
+        meanLevel,
+        sigma: sigmaLevel,
+        samples,
         problems: recommendedProblems,
       })
     } catch (err) {

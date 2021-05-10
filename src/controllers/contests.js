@@ -1,3 +1,4 @@
+const sequelize = require('sequelize')
 const { StatusCodes } = require('http-status-codes')
 
 const { validate, wrong, validUUID } = require('../utils')
@@ -96,9 +97,11 @@ const Contests = {
         where: {
           owner: email,
         },
+        order: sequelize.literal('"updatedAt" DESC'),
       })
       return res.status(StatusCodes.OK).send(contests)
     } catch (err) {
+      console.log(err)
       return res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(wrong)
     }
   },

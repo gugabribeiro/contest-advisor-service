@@ -13,6 +13,7 @@ const firebaseConfig = {
 const authenticated = async (req, res, next) => {
   const { authorization } = req.headers
 
+  console.log(token)
   if (!authorization || !authorization.startsWith('Bearer')) {
     return res
       .status(StatusCodes.UNAUTHORIZED)
@@ -21,8 +22,11 @@ const authenticated = async (req, res, next) => {
 
   const [_, token] = authorization.split('Bearer ')
 
+  console.log(token)
+
   try {
     const { email } = await firebase.auth().verifyIdToken(token)
+    console.log(email)
     res.locals = {
       ...res.locals,
       email,

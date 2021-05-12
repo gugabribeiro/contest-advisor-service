@@ -1,1 +1,1 @@
-# contest-advisor-service
+# Contest Advisor Service
